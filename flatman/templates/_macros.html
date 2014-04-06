@@ -1,0 +1,41 @@
+{% macro alert(category, message) %}
+    {% set replace = {"message":"info","error":"danger"} %}
+    {% set c = replace[category] if category in replace else category %}
+
+    {% set icons = {"info": "exclamation-circle", "warning":"warning", "success":"check", "danger": "times"} %}
+
+    <div class="alert alert-{{ c }}">
+        <div class="container">
+            <i class="fa fa-{{ icons[c] }}"></i>
+            {{ message | safe }}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro form_errors(form) %}
+    {% if form.errors %}
+
+        {% for field_name in form.errors %}
+            {% for error in form.errors[field_name] %}
+                {{ alert("danger", form[field_name].label.text + ": " + error) }}
+            {% endfor %}
+        {% endfor %}
+
+    {% endif %}
+{% endmacro %}
+
+{% macro field_error(field) %}
+    {% if field.errors %}
+    <div class="form-errors">
+        {% for error in field.errors %}
+            {{ alert("danger", error) }}
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endmacro %}
+
+{% macro markdown_info(helpBlock) %}
+    {% if helpBlock %}<p class="help-block">{% endif %}
+        {{ _('You can use <a href="http://daringfireball.net/projects/markdown/" target="_blank">Markdown</a> syntax for formatting.') }}
+    {% if helpBlock %}</p>{% endif %}
+{% endmacro %}
