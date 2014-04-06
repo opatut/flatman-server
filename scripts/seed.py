@@ -91,7 +91,7 @@ item = ShoppingItem("1kg", "Tomaten", aldi)
 item = ShoppingItem("2 Dosen", "Mais", aldi)
 item = ShoppingItem("", "Frischeiwaffeln", aldi)
 item = ShoppingItem("1", "Bohrmaschine").group = group
-item = ShoppingItem("", u"Holunderblütensirup", edeka)
+item = ShoppingItem("2 Flaschen", u"Holunderblütensirup", edeka).description = u"Den für 2.95€ gleich links um die Ecke im Regal, oben rechts, beim Himbeersaft."
 
 db.session.add(group)
 db.session.commit()
