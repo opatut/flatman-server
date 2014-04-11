@@ -16,21 +16,21 @@ group.name = "Fernsehstudio"
 jauch = User()
 jauch.username = "jauch"
 jauch.displayname = u"Günther Jauch"
-jauch.password = "hunter2"
+jauch.password = User.generate_password("hunter2")
 jauch.email = "jauch@example.com"
-jauch.group = group
+# jauch.group = group
 
 gause = User()
 gause.username = "gause"
 gause.displayname = "Gundula Gause"
-gause.password = "hunter2"
+gause.password = User.generate_password("hunter2")
 gause.email = "gause@example.com"
 gause.group = group
 
 raab = User()
 raab.username = "raab"
 raab.displayname = "Stefan Raab"
-raab.password = "hunter2"
+raab.password = User.generate_password("hunter2")
 raab.email = "raab@example.com"
 raab.group = group
 
@@ -89,7 +89,7 @@ sonstiges = ShoppingCategory("Sonstiges", group)
 
 item = ShoppingItem("1kg", "Tomaten", aldi)
 item = ShoppingItem("2 Dosen", "Mais", aldi)
-item = ShoppingItem("", "Frischeiwaffeln", aldi)
+item = ShoppingItem("", "Frischeiwaffeln", aldi).purchased = True
 item = ShoppingItem("1", "Bohrmaschine").group = group
 item = ShoppingItem("2 Flaschen", u"Holunderblütensirup", edeka).description = u"Den für 2.95€ gleich links um die Ecke im Regal, oben rechts, beim Himbeersaft."
 

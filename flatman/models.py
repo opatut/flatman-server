@@ -2,6 +2,8 @@ from flatman import app, db
 from flask import url_for, session, abort
 from datetime import datetime
 from random import choice
+from hashlib import sha512
+from string import printable
 
 class User(db.Model):
     # columns
@@ -13,6 +15,9 @@ class User(db.Model):
 
     # foreign keys
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"))
+
+    # relationships
+    auth_tokens = db.relationship("AuthToken", backref="user", lazy="dynamic")
 
     # login stuff
     def get_id(self):
@@ -33,6 +38,35 @@ class User(db.Model):
             displayname=self.displayname,
             email=self.email if private else None,
             group_id=self.group_id)
+
+    def generateAuthToken(self):
+        auth = AuthToken(self)
+        db.session.add(auth)
+        db.session.commit()
+        return auth
+
+    @staticmethod
+    def generate_password(password):
+        return sha512(password).hexdigest()
+
+TOKEN_LENGTH = 128
+class AuthToken(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    token = db.Column(db.String(255))
+    status = db.Column(db.Enum("valid", "revoked", "deleted", name="auth_token_status"), default="valid")
+    created = db.Column(db.DateTime)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+
+    def __init__(self, user):
+        self.token = "".join([choice(printable) for x in range(TOKEN_LENGTH)])
+        self.status = "valid"
+        self.created = datetime.utcnow()
+        self.user = user
+
+    def toDict(self):
+        return dict(token=self.token, 
+            created=str(self.created), 
+            user_id=self.user_id)
 
 class Group(db.Model):
     # columns
