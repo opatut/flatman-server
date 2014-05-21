@@ -1,9 +1,10 @@
 from flatman import app
+from flask import request
 from flask.ext.wtf import Form
 from wtforms import ValidationError
 from wtforms.fields import TextField, SelectField, BooleanField, HiddenField, FieldList, FormField, RadioField, PasswordField, TextAreaField
 from wtforms.ext.dateutil.fields import DateTimeField
-from wtforms.validators import Required, Length, Regexp, Optional, NoneOf
+from wtforms.validators import Required, Length, Regexp, Optional, NoneOf, Email
 
 # Helper class for multiple forms on one page
 class MultiForm(Form):
@@ -20,3 +21,9 @@ class MultiForm(Form):
         self.form_name.data = self._form_name
         return Form.hidden_tag(self, *args, **kwargs)
 
+
+class RegisterForm(MultiForm):
+    username = TextField("Username", validators=[Required()])
+    password = PasswordField("Password", validators=[Required()])
+    email = TextField("Email", validators=[Required(), Email()])
+    displayname = TextField("Display Name", validators=[Optional()])

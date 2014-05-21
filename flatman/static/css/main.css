@@ -1,0 +1,48 @@
+* {
+    /*font-family: "Noto Sans" !important;*/
+}
+
+.styled-form {
+    border: 1px solid #888;
+    border-radius: 4px;
+    background: #F0F7FF;
+}
+
+.styled-form .form-title {
+    border-radius: 4px 4px 0 0;
+    padding: 10px;
+    border-bottom: 1px solid #CCC;
+}
+
+.styled-form .form-title h2 {
+    margin: 0;
+    color: #005AAB;
+    font-size: 14pt;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.styled-form .form-controls {
+
+}
+
+.styled-form .form-controls .form-group {
+    background: #E5E9EB; 
+    border-top: 1px solid #FFF;
+    border-bottom: 1px solid #CCC;
+    margin: 0;
+    padding: 10px;
+}
+
+.styled-form .form-title p {
+    margin: 0;
+}
+
+.styled-form .form-actions {
+    /*border-top: 1px solid #FFF;*/
+    padding: 10px;
+}
+
+.styled-form .form-actions > * {
+    margin: 0;
+}

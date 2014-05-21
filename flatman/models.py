@@ -1,5 +1,5 @@
 from flatman import app, db
-from flask import url_for, session, abort
+from flask import url_for, session, abort, request
 from datetime import datetime
 from random import choice
 from hashlib import sha512
@@ -18,6 +18,7 @@ class User(db.Model):
 
     # relationships
     auth_tokens = db.relationship("AuthToken", backref="user", lazy="dynamic")
+    expenses = db.relationship("Expense", backref="user", lazy="dynamic")
 
     # login stuff
     def get_id(self):
@@ -47,7 +48,7 @@ class User(db.Model):
 
     @staticmethod
     def generate_password(password):
-        return sha512(password).hexdigest()
+        return sha512(str(password)).hexdigest()
 
 TOKEN_LENGTH = 128
 class AuthToken(db.Model):
@@ -79,6 +80,7 @@ class Group(db.Model):
     shopping_categories = db.relationship("ShoppingCategory", backref="group", lazy="dynamic")
     all_shopping_items = db.relationship("ShoppingItem", backref="group", lazy="dynamic")
     all_tasks = db.relationship("Task", backref="group", lazy="dynamic")
+    expenses = db.relationship("Expense", backref="group", lazy="dynamic")
 
     def __init__(self):
         self.created = datetime.utcnow()
@@ -199,3 +201,19 @@ class ShoppingCategory(db.Model):
         return dict(id=self.id, 
             title=self.title, 
             group_id=self.group_id)
+
+class Expense(db.Model):
+    # columns
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(80))
+    amount = db.Column(db.Integer) # cents, negative is income/deposit
+    date = db.Column(db.DateTime)
+
+    # foreign keys
+    group_id = db.Column(db.Integer, db.ForeignKey("group.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+
+    def __init(self, title="", amount=0):
+        self.title = title
+        self.amount = amount
+        date = datetime.utcnow()

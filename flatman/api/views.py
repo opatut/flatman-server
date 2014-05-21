@@ -1,4 +1,4 @@
-from flatman import db
+from flatman import db, gravatar
 from flatman.api import api
 from flatman.models import *
 # from flatmans.forms import *
@@ -38,6 +38,20 @@ def current_user_details():
     current_user = get_user()
     return make_reply(True, current_user.toDict(private=True))
 
+@api.route("/user/<int:id>/avatar")
+@api.route("/user/<int:id>/avatar/<int:size>")
+def user_avatar(id, size=128):
+    user = User.query.filter_by(id=id).first_or_404()
+    return redirect(gravatar(user.email, size=size))
+
+
+@api.route("/shopping/cleanup", methods=("POST",))
+def shopping_cleanup():
+    current_user = get_user()
+    ShoppingItem.query.filter_by(group_id=current_user.group.id, purchased=True).update(dict(deleted=True))
+    db.session.commit()
+    return make_reply(True)
+
 @api.route("/shopping/item/status/<int:id>/<status>", methods=("POST",))
 def shopping_item_status(id, status):
     current_user = get_user()
@@ -45,6 +59,30 @@ def shopping_item_status(id, status):
     item = ShoppingItem.query.filter_by(id=id).first_or_404()
     # if not current_user in item.group.members: abort(403)
     item.purchased = (status == "purchased")
+    db.session.commit()
+    return make_reply(True)
+
+@api.route("/shopping/item/new", methods=("POST",))
+def shopping_item_new():
+    current_user = get_user()
+    errors = {}
+
+    title = request.form.get("title", "")
+    amount = request.form.get("amount", "")
+    description = request.form.get("description", "")
+
+    if not title:
+        errors["item"] = "TOO_SHORT"
+
+    if errors:
+        return error("FORM_ERRORS", errors=errors)
+
+    item = ShoppingItem()
+    item.amount = amount
+    item.title = title
+    item.description = description
+    item.group = current_user.group
+    db.session.add(item)
     db.session.commit()
     return make_reply(True)
 
