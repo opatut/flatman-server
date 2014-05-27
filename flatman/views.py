@@ -22,3 +22,8 @@ def register():
         return redirect(url_for("index"))
 
     return render_template("register.html", form=form)
+
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
+

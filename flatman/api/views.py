@@ -1,10 +1,9 @@
 from flatman import db, gravatar
 from flatman.api import api
-from flatman.models import *
-# from flatmans.forms import *
-from flask import redirect, abort, request, render_template, flash, url_for, g
+from flatman.models import AuthToken, User, ShoppingItem, Group
+from flask import redirect, abort, request, render_template
 from datetime import datetime
-import json
+import json, time
 
 def get_user(required=True):
     auth = AuthToken.query.filter_by(token=request.form.get("auth")).first()
@@ -33,6 +32,17 @@ def group_details():
         return error("NO_GROUP")
     return make_reply(True, group.toDict())
 
+@api.route("/transactions/", methods=("POST",))
+@api.route("/transactions/<int:year>/<int:month>", methods=("POST",))
+def transactions_list(year=None, month=None):
+    if not year: year = datetime.utcnow().year 
+    if not month: month = datetime.utcnow().month 
+    current_user = get_user()
+    group = current_user.group
+    # TODO: filtering
+    transactions = Transaction.query.filter_by(group=group).all()
+    return make_reply(True, [transaction.toDict() for transaction in transactions])
+
 @api.route("/user", methods=("POST", ))
 def current_user_details():
     current_user = get_user()
@@ -42,7 +52,7 @@ def current_user_details():
 @api.route("/user/<int:id>/avatar/<int:size>")
 def user_avatar(id, size=128):
     user = User.query.filter_by(id=id).first_or_404()
-    return redirect(gravatar(user.email, size=size))
+    return redirect(user.avatar_url or gravatar(user.email, size=size))
 
 
 @api.route("/shopping/cleanup", methods=("POST",))

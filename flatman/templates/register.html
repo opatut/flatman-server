@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_simple.html" %}
 
 {% block content %}
     <h1>Register</h1>
@@ -20,7 +20,7 @@
             </form>
         </div>
         <div class="col-md-6">
-            <form method="POST" class="nostyled-form">
+            <form method="POST" class="form-horizontal form-halfwidth nostyled-form">
                 {{ form.hidden_tag() }}
                 {{ form_errors(form) }}
                 <div class="form-title">
@@ -29,20 +29,28 @@
                 </div>
                 <div class="form-controls">
                     <div class="form-group">
-                        {{ form.username.label }}
-                        {{ form.username(class="form-control") }}
+                        {{ form.username.label(class="control-label col-sm-4") }}
+                        <div class="col-sm-8">
+                            {{ form.username(class="form-control") }}
+                        </div>
                     </div>
                     <div class="form-group">
-                        {{ form.password.label }}
-                        {{ form.password(class="form-control") }}
+                        {{ form.password.label(class="control-label col-sm-4") }}
+                        <div class="col-sm-8">
+                            {{ form.password(class="form-control") }}
+                        </div>
                     </div>
                     <div class="form-group">
-                        {{ form.email.label }}
-                        {{ form.email(class="form-control") }}
+                        {{ form.email.label(class="control-label col-sm-4") }}
+                        <div class="col-sm-8">
+                            {{ form.email(class="form-control") }}
+                        </div>
                     </div>
                     <div class="form-group">
-                        {{ form.displayname.label }}
-                        {{ form.displayname(class="form-control") }}
+                        {{ form.displayname.label(class="control-label col-sm-4") }}
+                        <div class="col-sm-8">
+                            {{ form.displayname(class="form-control") }}
+                        </div>
                     </div>
                 </div>
                 <div class="form-actions">

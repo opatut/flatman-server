@@ -16,31 +16,10 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-fixed navbar-inverse" role="navigation">
-        <div class="navbar-text">
-            Title
-        </div>
-    </nav>
-
-    <div class="content">
-        <div class="menu">
-            <ul>
-                <li class="active"><a href="#"><i class="fa fa-home"></i> Dashboard</a></li>
-                <li><a href="#"><i class="fa fa-users"></i> Members</a></li>
-                <li><a href="#"><i class="fa fa-shopping-cart"></i> Shopping</a></li>
-                <li><a href="#"><i class="fa fa-money"></i> Money</a></li>
-                <li><a href="#"><i class="fa fa-tasks"></i> Tasks</a></li>
-                <li><a href="#"><i class="fa fa-wrench"></i> Settings</a></li>
-            </ul>
-        </div>
-
-        <div class="page">
-            <div class="padding">
-                {% include "_flashes.html" %}
-                {% block content %}
-                {% endblock %}
-            </div>
-        </div>
+    <div class="container">
+        {% include "_flashes.html" %}
+        {% block content %}
+        {% endblock %}
     </div>
 
     <script type="text/javascript" src="{{ url_for('static', filename='js/moment.min.js') }}"></script>

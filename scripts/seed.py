@@ -18,13 +18,15 @@ jauch.username = "jauch"
 jauch.displayname = u"Günther Jauch"
 jauch.password = User.generate_password("hunter2")
 jauch.email = "jauch@example.com"
-# jauch.group = group
+jauch.avatar_url = "http://www.iofp.de/wp-content/uploads/2014/05/1_SWR_Uni_Talk_Guenther_Jauch_2012.jpg"
+jauch.group = group
 
 gause = User()
 gause.username = "gause"
 gause.displayname = "Gundula Gause"
 gause.password = User.generate_password("hunter2")
 gause.email = "gause@example.com"
+gause.avatar_url = "http://www.schau-hin.info/fileadmin/_processed_/csm_Gundula_Gause_Website_d78e4ed013.jpg"
 gause.group = group
 
 raab = User()
@@ -32,6 +34,7 @@ raab.username = "raab"
 raab.displayname = "Stefan Raab"
 raab.password = User.generate_password("hunter2")
 raab.email = "raab@example.com"
+raab.avatar_url = "http://www.dieeventmaker.de/images/content/moderatoren_neu_2014/Stefan_Raab.jpg"
 raab.group = group
 
 task = Task()
@@ -92,6 +95,16 @@ item = ShoppingItem("2 Dosen", "Mais", aldi)
 item = ShoppingItem("", "Frischeiwaffeln", aldi).purchased = True
 item = ShoppingItem("1", "Bohrmaschine").group = group
 item = ShoppingItem("2 Flaschen", u"Holunderblütensirup", edeka).description = u"Den für 2.95€ gleich links um die Ecke im Regal, oben rechts, beim Himbeersaft."
+
+
+einkauf1 = Transaction(group, raab, "cashbook", "extern", 219, "Reinigungsmittel", "ALDI")
+einkauf2 = Transaction(group, jauch, "cashbook", "extern", 1752, "Alkohol", "Edeka")
+einkauf3 = Transaction(group, raab, "cashbook", "extern", 5251, u"Großeinkauf", "REWE")
+einkauf4 = Transaction(group, gause, "cashbook", "extern", 1220, u"Essen für alle", "Mensa")
+
+einzahlung1 = Transaction(group, gause, gause, "cashbook", 12000, u"Unsere WG soll schöner werden")
+einzahlung2 = Transaction(group, jauch, jauch, "cashbook", 12000, u"Diesen Monat zahle ich auch")
+einzahlung3 = Transaction(group, raab, raab, "cashbook", 12000, u"Essensgeld")
 
 db.session.add(group)
 db.session.commit()

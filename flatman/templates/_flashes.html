@@ -1,5 +1,8 @@
-<div class="flashes">
-{% for category, message in get_flashed_messages(with_categories=True) %}
-    {{ alert(category, message) }}
-{% endfor %}
-</div>
+{% set flashes = get_flashed_messages(with_categories=True) %}
+{% if flashes %}
+    <div class="flashes">
+    {% for category, message in flashes %}
+        {{ alert(category, message) }}
+    {% endfor %}
+    </div>
+{% endif %}

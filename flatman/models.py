@@ -12,13 +12,16 @@ class User(db.Model):
     displayname = db.Column(db.String(80))
     email = db.Column(db.String(80))
     password = db.Column(db.String(64))
+    avatar_url = db.Column(db.String(180))
 
     # foreign keys
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"))
 
     # relationships
     auth_tokens = db.relationship("AuthToken", backref="user", lazy="dynamic")
-    expenses = db.relationship("Expense", backref="user", lazy="dynamic")
+    transactions_authored = db.relationship("Transaction", backref="author",     lazy="dynamic", foreign_keys="Transaction.author_id")
+    transactions_out      = db.relationship("Transaction", backref="from_user",  lazy="dynamic", foreign_keys="Transaction.from_user_id")
+    transactions_in       = db.relationship("Transaction", backref="to_user",    lazy="dynamic", foreign_keys="Transaction.to_user_id")
 
     # login stuff
     def get_id(self):
@@ -80,7 +83,7 @@ class Group(db.Model):
     shopping_categories = db.relationship("ShoppingCategory", backref="group", lazy="dynamic")
     all_shopping_items = db.relationship("ShoppingItem", backref="group", lazy="dynamic")
     all_tasks = db.relationship("Task", backref="group", lazy="dynamic")
-    expenses = db.relationship("Expense", backref="group", lazy="dynamic")
+    expenses = db.relationship("Transaction", backref="group", lazy="dynamic")
 
     def __init__(self):
         self.created = datetime.utcnow()
@@ -202,18 +205,53 @@ class ShoppingCategory(db.Model):
             title=self.title, 
             group_id=self.group_id)
 
-class Expense(db.Model):
+class Transaction(db.Model):
     # columns
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(80))
-    amount = db.Column(db.Integer) # cents, negative is income/deposit
+    from_type = db.Column(db.Enum("user", "extern", "cashbook", name="transaction_from_type"))
+    to_type   = db.Column(db.Enum("user", "extern", "cashbook", name="transaction_to_type"))
+    extern_name = db.Column(db.String(128))
+    reason = db.Column(db.Text)
+    amount = db.Column(db.Integer)
     date = db.Column(db.DateTime)
+    comment = db.Column(db.Text)
+    type = db.Column(db.Enum("normal", "recurring", "reset", name="transaction_type"), default="normal")
 
     # foreign keys
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"))
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    author_id    = db.Column(db.Integer, db.ForeignKey("user.id"))
+    from_user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    to_user_id   = db.Column(db.Integer, db.ForeignKey("user.id"))
 
-    def __init(self, title="", amount=0):
-        self.title = title
+    def __init__(self, group, author, from_, to_, amount, reason="", extern="", comment="", type="normal"):
+        self.group = group
+        self.author = author
+        self.from_type = "user" if isinstance(from_, User) else from_
+        self.from_user = from_  if isinstance(from_, User) else None
+        self.to_type   = "user" if isinstance(to_,   User) else to_   
+        self.to_user   = to_    if isinstance(to_,   User) else None
         self.amount = amount
+        self.reason = reason
+        self.extern_name = extern
+        self.comment = comment
+        self.type = type
         date = datetime.utcnow()
+
+    def toDict(self, private=False):
+        return dict(id=self.id,
+            from_type=self.from_type,
+            to_type=self.to_type,
+            extern_name=self.extern_name,
+            reason=self.reason,
+            amount=self.amount,
+            date=self.date,
+            comment=self.comment,
+            type=self.type,
+            group_id=self.group_id,
+            author_id=self.author_id,
+            author=self.author.toDict(),
+            from_user_id=self.from_user_id,
+            from_user=self.from_user.toDict() if self.from_user else None,
+            to_user_id=self.to_user_id,
+            to_user=self.to_user.toDict() if self.to_user else None
+            )

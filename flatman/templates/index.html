@@ -1,6 +1,8 @@
-{% extends "base.html" %}
+{% extends "base_simple.html" %}
 
 {% block content %}
-    <h1>Hello World</h1>
+    <h1>Page index</h1>
     <p>Hi there.</p>
+
+    <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Go to Dashboard &raquo;</a>
 {% endblock %}
