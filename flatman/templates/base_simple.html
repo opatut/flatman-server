@@ -1,32 +1,9 @@
-{% from "_macros.html" import alert, form_errors, field_error, markdown_info %}
-<!DOCTYPE html>
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>flatman</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "_frame.html" %}
 
-    <link href='http://fonts.googleapis.com/css?family=Noto+Sans' rel='stylesheet' type='text/css'>
-    <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" media="screen">
-    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet" media="screen">
-    <!-- <link href="{{ url_for('static', filename='css/bootstrap-theme.css') }}" rel="stylesheet" media="screen"> -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.css') }}" media="screen">
-    <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" media="screen">
-    {% block head %}{% endblock %}
-</head>
-
-<body>
+{% block base %}
     <div class="container">
         {% include "_flashes.html" %}
         {% block content %}
         {% endblock %}
     </div>
-
-    <script type="text/javascript" src="{{ url_for('static', filename='js/moment.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/util.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
-    {% block foot %}{% endblock %}
-</body>
-</html>
+{% endblock %}

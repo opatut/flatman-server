@@ -1,3 +1,4 @@
+{% from "_macros.html" import alert %}
 {% set flashes = get_flashed_messages(with_categories=True) %}
 {% if flashes %}
     <div class="flashes">

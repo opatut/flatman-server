@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="padding">
+    <div class="page-header">
+        <h1>Group members</h1>
+    </div>
+
+    <ul class="list-unstyled member-list">
+        {% for member in current_group.members.all() %}
+            <li class="member">
+                <div class="avatar-full">
+                    <img src="{{ member.get_avatar(256) }}" alt="">
+                </div>
+                <div class="extra-info">
+                    <div class="username">
+                        {{ member.displayname }}
+                    </div>
+                    <ul class="list-unstyled member-details">
+                        <li>joined on {{ member.group_joined_date|date }}</li>
+                        <li><a href="mailto:{{ member.email }}">{{ member.email }}</a></li>
+                        {% if member.phone %}
+                            <li><i class="fa fa-phone"></i> {{ member.phone }}</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

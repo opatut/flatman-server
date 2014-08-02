@@ -18,8 +18,9 @@ jauch.username = "jauch"
 jauch.displayname = u"Günther Jauch"
 jauch.password = User.generate_password("hunter2")
 jauch.email = "jauch@example.com"
+jauch.phone = "0152125342"
 jauch.avatar_url = "http://www.iofp.de/wp-content/uploads/2014/05/1_SWR_Uni_Talk_Guenther_Jauch_2012.jpg"
-jauch.group = group
+jauch.joinGroup(group)
 
 gause = User()
 gause.username = "gause"
@@ -27,7 +28,7 @@ gause.displayname = "Gundula Gause"
 gause.password = User.generate_password("hunter2")
 gause.email = "gause@example.com"
 gause.avatar_url = "http://www.schau-hin.info/fileadmin/_processed_/csm_Gundula_Gause_Website_d78e4ed013.jpg"
-gause.group = group
+gause.joinGroup(group)
 
 raab = User()
 raab.username = "raab"
@@ -35,7 +36,7 @@ raab.displayname = "Stefan Raab"
 raab.password = User.generate_password("hunter2")
 raab.email = "raab@example.com"
 raab.avatar_url = "http://www.dieeventmaker.de/images/content/moderatoren_neu_2014/Stefan_Raab.jpg"
-raab.group = group
+raab.joinGroup(group)
 
 task = Task()
 task.title = "Kaffe kochen"

@@ -1,11 +1,14 @@
 from flatman import db, gravatar
 from flatman.api import api
-from flatman.models import AuthToken, User, ShoppingItem, Group
+from flatman.models import AuthToken, User, ShoppingItem, Group, ShoppingCategory
+
 from flask import redirect, abort, request, render_template
+from flask.ext.login import current_user
 from datetime import datetime
 import json, time
 
 def get_user(required=True):
+    if current_user.is_authenticated(): return current_user
     auth = AuthToken.query.filter_by(token=request.form.get("auth")).first()
     if not auth or auth.status != "valid": 
         abort(401)
@@ -52,7 +55,7 @@ def current_user_details():
 @api.route("/user/<int:id>/avatar/<int:size>")
 def user_avatar(id, size=128):
     user = User.query.filter_by(id=id).first_or_404()
-    return redirect(user.avatar_url or gravatar(user.email, size=size))
+    return redirect(user.get_avatar(size))
 
 
 @api.route("/shopping/cleanup", methods=("POST",))
@@ -70,7 +73,7 @@ def shopping_item_status(id, status):
     # if not current_user in item.group.members: abort(403)
     item.purchased = (status == "purchased")
     db.session.commit()
-    return make_reply(True)
+    return make_reply(True, dict(item=item.toDict()))
 
 @api.route("/shopping/item/new", methods=("POST",))
 def shopping_item_new():
@@ -95,6 +98,12 @@ def shopping_item_new():
     db.session.add(item)
     db.session.commit()
     return make_reply(True)
+
+@api.route("/shopping/categories", methods=("POST","GET"))
+def shopping_categories():
+    current_user = get_user()
+    categories = ShoppingCategory.query.filter_by(group_id=current_user.group.id)
+    return make_reply(True, dict(categories=[c.toDict() for c in categories]))
 
 @api.route("/group/create", methods=("POST",))
 def create_group():

@@ -1,5 +1,5 @@
-from flatman import app, db
-from flask import url_for, session, abort, request
+from flatman import app, db, gravatar
+from flask import url_for, session, abort, request, Markup
 from datetime import datetime
 from random import choice
 from hashlib import sha512
@@ -11,8 +11,10 @@ class User(db.Model):
     username = db.Column(db.String(80))
     displayname = db.Column(db.String(80))
     email = db.Column(db.String(80))
+    phone = db.Column(db.String(80))
     password = db.Column(db.String(64))
     avatar_url = db.Column(db.String(180))
+    group_joined_date = db.Column(db.DateTime)
 
     # foreign keys
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"))
@@ -49,9 +51,25 @@ class User(db.Model):
         db.session.commit()
         return auth
 
+    def joinGroup(self, group):
+        self.group = group
+        self.group_joined_date = datetime.utcnow()
+
+    def get_avatar(self, size=32):
+        return gravatar(self.email, size=size)
+        #return self.avatar_url or gravatar(self.email, size=size)
+
+    def get_link(self):
+        return Markup(u'<a href="{0}">{1}</a>'.format("#", self.displayname))
+
     @staticmethod
     def generate_password(password):
         return sha512(str(password)).hexdigest()
+
+    @staticmethod
+    def find(id):
+        id = id.strip()
+        return User.query.filter_by(username=id).first() or User.query.filter_by(email=id).first()
 
 TOKEN_LENGTH = 128
 class AuthToken(db.Model):
@@ -83,7 +101,7 @@ class Group(db.Model):
     shopping_categories = db.relationship("ShoppingCategory", backref="group", lazy="dynamic")
     all_shopping_items = db.relationship("ShoppingItem", backref="group", lazy="dynamic")
     all_tasks = db.relationship("Task", backref="group", lazy="dynamic")
-    expenses = db.relationship("Transaction", backref="group", lazy="dynamic")
+    transactions = db.relationship("Transaction", backref="group", lazy="dynamic")
 
     def __init__(self):
         self.created = datetime.utcnow()
@@ -103,7 +121,8 @@ class Group(db.Model):
             members=[member.toDict() for member in self.members],
             tasks=[task.toDict() for task in self.tasks],
             shopping_categories=[cat.toDict() for cat in self.shopping_categories],
-            shopping_items=[item.toDict() for item in self.shopping_items])
+            shopping_items=[item.toDict() for item in self.shopping_items],
+            transactions=[transaction.toDict() for transaction in self.transactions])
 
 class Task(db.Model):
     # columns
@@ -141,6 +160,9 @@ class Task(db.Model):
                 self.assignee = choice(members)
 
         db.session.commit()
+
+    def get_url(self):
+        return url_for("task", id=self.id)
 
 
     def toDict(self):
@@ -203,6 +225,7 @@ class ShoppingCategory(db.Model):
     def toDict(self):
         return dict(id=self.id, 
             title=self.title, 
+            item_count=self.all_items.count(),
             group_id=self.group_id)
 
 class Transaction(db.Model):
@@ -235,7 +258,7 @@ class Transaction(db.Model):
         self.extern_name = extern
         self.comment = comment
         self.type = type
-        date = datetime.utcnow()
+        self.date = datetime.utcnow()
 
     def toDict(self, private=False):
         return dict(id=self.id,
@@ -244,7 +267,7 @@ class Transaction(db.Model):
             extern_name=self.extern_name,
             reason=self.reason,
             amount=self.amount,
-            date=self.date,
+            date=str(self.date),
             comment=self.comment,
             type=self.type,
             group_id=self.group_id,

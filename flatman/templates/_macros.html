@@ -24,6 +24,16 @@
     {% endif %}
 {% endmacro %}
 
+{% macro form_field(field, label_size=4) %}
+    <div class="form-group">
+        {{ field.label(class="control-label col-sm-" + label_size|string) }}
+        <div class="col-sm-{{ 12 - label_size }}">
+            {{ field(class="form-control") }}
+            {{ field_error(field) }}
+        </div>
+    </div>
+{% endmacro %}
+
 {% macro field_error(field) %}
     {% if field.errors %}
     <div class="form-errors">

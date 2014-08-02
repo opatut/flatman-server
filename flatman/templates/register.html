@@ -1,61 +1,72 @@
 {% extends "base_simple.html" %}
 
 {% block content %}
-    <h1>Register</h1>
+<div class="page-header">
+    <h1>Login or register</h1>
+</div>
 
     <div class="row">
         <div class="col-md-6">
-            <form method="POST" class="nostyled-form">
+            <form method="POST" class="form-horizontal form-halfwidth nostyled-form">
+                {{ login_form.hidden_tag() }}
                 <div class="form-title">
                     <h2>Login</h2>     
-                    <p>Create a flatman account to get started with your flat.</p>
+                    <p>Log into your existing flatman account.</p>
                 </div>
                 <div class="form-controls">
+                    {{ form_field(login_form.username) }}
+                    {{ form_field(login_form.password) }}
                 </div>
                 <div class="form-actions">
                     <div class="form-group">
-                        <input type="submit" class="btn btn-primary btn-normal" value="Login" />
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-8">
+                            <input type="submit" class="btn btn-primary btn-normal" value="Login" />
+                        </div>
                     </div>
                 </div>
             </form>
         </div>
         <div class="col-md-6">
             <form method="POST" class="form-horizontal form-halfwidth nostyled-form">
-                {{ form.hidden_tag() }}
-                {{ form_errors(form) }}
+                {{ register_form.hidden_tag() }}
+                {{ form_errors(register_form) }}
                 <div class="form-title">
                     <h2>Register</h2>     
                     <p>Create a flatman account to get started with your flat.</p>
                 </div>
                 <div class="form-controls">
                     <div class="form-group">
-                        {{ form.username.label(class="control-label col-sm-4") }}
+                        {{ register_form.username.label(class="control-label col-sm-4") }}
                         <div class="col-sm-8">
-                            {{ form.username(class="form-control") }}
+                            {{ register_form.username(class="form-control") }}
                         </div>
                     </div>
                     <div class="form-group">
-                        {{ form.password.label(class="control-label col-sm-4") }}
+                        {{ register_form.password.label(class="control-label col-sm-4") }}
                         <div class="col-sm-8">
-                            {{ form.password(class="form-control") }}
+                            {{ register_form.password(class="form-control") }}
                         </div>
                     </div>
                     <div class="form-group">
-                        {{ form.email.label(class="control-label col-sm-4") }}
+                        {{ register_form.email.label(class="control-label col-sm-4") }}
                         <div class="col-sm-8">
-                            {{ form.email(class="form-control") }}
+                            {{ register_form.email(class="form-control") }}
                         </div>
                     </div>
                     <div class="form-group">
-                        {{ form.displayname.label(class="control-label col-sm-4") }}
+                        {{ register_form.displayname.label(class="control-label col-sm-4") }}
                         <div class="col-sm-8">
-                            {{ form.displayname(class="form-control") }}
+                            {{ register_form.displayname(class="form-control") }}
                         </div>
                     </div>
                 </div>
                 <div class="form-actions">
                     <div class="form-group">
-                        <input type="submit" class="btn btn-primary btn-normal" value="Register" />
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-8">
+                            <input type="submit" class="btn btn-primary btn-normal" value="Register" />
+                        </div>
                     </div>
                 </div>
             </form>
