@@ -2,7 +2,7 @@ from flatman import app
 
 @app.template_filter()
 def date(s):
-    return s.strftime("%a %d %b")
+    return s.strftime("%a, %d %b")
 
 @app.template_filter()
 def time(s):
@@ -10,7 +10,11 @@ def time(s):
 
 @app.template_filter()
 def datetime(s):
-    return s.strftime("%a %d %b %H:%M")
+    return s.strftime("%a %d %b, %H:%M")
+
+@app.template_filter()
+def amount(s):
+    return "%.02f" % (s/100.0)
 
 # @app.context_processor
 # def inject():

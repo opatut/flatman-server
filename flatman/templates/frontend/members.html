@@ -1,0 +1,23 @@
+<div class="padding">
+    <div class="page-header">
+        <h1>Group members</h1>
+    </div>
+
+    <ul cselect ng-model="current" class="list-unstyled member-list">
+        <li class="member" ng-repeat="member in members" cselect-option="member">
+            <div class="avatar-full">
+                <img src="{{ member.mailhash | gravatar:200 }}" alt="">
+            </div>
+            <div class="extra-info">
+                <div class="username">
+                    {{ member.displayname }}
+                </div>
+                <ul class="list-unstyled member-details">
+                    <li>joined on {{ member.group_joined_date }}</li>
+                    <li><a href="mailto:{{ member.email }}">{{ member.email }}</a></li>
+                    <li ng-show="member.phone"><i class="fa fa-phone"></i> {{ member.phone }}</li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>

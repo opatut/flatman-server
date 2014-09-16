@@ -22,7 +22,7 @@ import flatman.api
 
 app.register_blueprint(flatman.api.api, url_prefix='/api')
 
-login_manager.login_view = "register"
+login_manager.login_view = "index"
 
 @login_manager.user_loader
 def load_user(userid):

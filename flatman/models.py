@@ -2,7 +2,7 @@ from flatman import app, db, gravatar
 from flask import url_for, session, abort, request, Markup
 from datetime import datetime
 from random import choice
-from hashlib import sha512
+from hashlib import sha512, md5
 from string import printable
 
 class User(db.Model):
@@ -42,7 +42,9 @@ class User(db.Model):
         return dict(id=self.id, 
             username=self.username, 
             displayname=self.displayname,
-            email=self.email if private else None,
+            email=self.email,
+            mailhash=md5(self.email).hexdigest(),
+            phone=self.phone,
             group_id=self.group_id)
 
     def generateAuthToken(self):
@@ -120,7 +122,7 @@ class Group(db.Model):
             created=str(self.created),
             members=[member.toDict() for member in self.members],
             tasks=[task.toDict() for task in self.tasks],
-            shopping_categories=[cat.toDict() for cat in self.shopping_categories],
+            shopping_categories={cat.id: cat.toDict() for cat in self.shopping_categories},
             shopping_items=[item.toDict() for item in self.shopping_items],
             transactions=[transaction.toDict() for transaction in self.transactions])
 

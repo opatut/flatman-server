@@ -1,23 +1,6 @@
 var categories;
 
 $(document).ready(function() {
-    $(".member-list .member").click(function() {
-       if($(this).hasClass("active")) {
-            $(this).removeClass("active");
-        } else {
-            $(this).parents(".member-list").find(".member").removeClass("active");
-            $(this).addClass("active");
-        }
-    });
-
-    $("[title]").tooltip();
-
-    $("table.list tr.item").click(function() {
-        var link = $(this).find("a.item-link").attr("href");
-        if(link) {
-            window.location = link;
-        }
-    });
 
     $(".shopping.list .item td.status").click(function(e) {
         var item = $(this).parents(".item");

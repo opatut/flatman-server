@@ -11,6 +11,10 @@ body {
     border: 0;
 }
 
+.form-control, .btn {
+    border-radius: 0;
+}
+
 html, body {
     margin: 0;
     padding: 0;
@@ -391,4 +395,8 @@ table.list tr.item.active td a {
 
 .tt-query {
     color: red;
+}
+
+.amount {
+    text-align: right;
 }

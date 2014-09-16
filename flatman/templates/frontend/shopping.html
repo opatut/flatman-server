@@ -1,0 +1,67 @@
+<div class="padding">
+    <div class="page-header">
+        <h1>Shopping</h1>
+    </div>
+
+    <table class="shopping list">
+        <tr>
+            <th width="32"></th>
+            <th width="128" class="amount">Amount</th>            
+            <th class="title">Title</th>
+            <th width="256" class="category">Category</th>
+            <th width="16"></th>
+        </tr>
+        <tr class="item" ng-repeat="item in items">
+            <td class="status" ng-click="togglePurchased(item)">
+                <i class="fa fa-spin fa-spinner" ng-show="item.updating"></i>
+                <i class="fa fa-check-square-o" ng-show="item.purchased && !item.updating"></i>
+                <i class="fa fa-square-o" ng-show="!item.purchased && !item.updating"></i>
+            </td>
+            <td class="amount" width="120">
+                {{ item.amount }}
+            </td>
+            <td class="title">
+                <span class="title">
+                    {{ item.title }}
+                </span> 
+
+                <span class="description">
+                    {{ item.description }}
+                    <i class="fa fa-plus-circle" ng-hide="item.description"></i>
+                </span>
+            </td>
+            <td class="category" width="200">
+                {{ categories[item.category_id].title }}
+            </td>
+            <td></td>
+        </tr>
+        <tr class="header">
+            <th></th>
+            <th></th>
+            <th colspan="2">
+                Add item 
+            </th>
+            <th></th>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="text" class="form-control autofocus" placeholder="Amount" />
+            </td>
+            <td>
+                <input type="text" class="form-control" placeholder="Item" />
+            </td>
+            <td>
+                <input type="text" class="form-control" placeholder="Category" data-autocomplete="ShoppingCategory" />
+            </td>
+            <td>
+                <button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i></button>
+            </td>
+        </tr> 
+    </table>
+    </form>
+    <hr>
+    <p>
+        <button class="btn btn-default"><i class="fa fa-trash-o"></i> Clean up</button>
+    </p>
+</div>

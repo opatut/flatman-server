@@ -1,0 +1,37 @@
+var module = angular.module("app.navigation");
+
+module.controller('NavigationController', ['$scope', '$location', function ($scope, $location) {
+    $scope.items = [
+        {
+            title: "Dashboard",
+            url: "/"
+        }, {
+            title: "Account",
+            url: "/account"
+        }, {
+            title: "Logout",
+            url: "/"
+        }, {
+            title: "Members",
+            url: "/members"
+        }, {
+            title: "Shopping",
+            url: "/"
+        }, {
+            title: "Money",
+            url: "/money"
+        }, {
+            title: "Tasks",
+            url: "/"
+        }, {
+            title: "Settings",
+            url: "/"
+        }
+    ];
+
+    $scope.navClass = function (page) {
+        var currentRoute = $location.path() || '/home';
+        console.log(currentRoute);
+        return page === currentRoute ? 'active' : '';
+    };
+}]);
