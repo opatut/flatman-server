@@ -10,7 +10,7 @@
                 <th>Assign</th>
                 <th>Deadline</th>
             </tr>
-            <tr class="item" ng-repeat="task in tasks" cselect-option="task">
+            <tr class="item" ng-repeat="task in tasks" cselect-option="task" ng-click="setCurrentTask(task)">
                 <td>
                     <a class="item-link" href="#">{{ task.title }}</a>
                 </td>

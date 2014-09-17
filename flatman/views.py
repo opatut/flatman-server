@@ -1,9 +1,8 @@
 from flatman import app
-from flatman.api.views import *
 from flatman.forms import RegisterForm, LoginForm
 from flatman.models import User
 
-from flask import flash, redirect, url_for, send_from_directory
+from flask import session, redirect, url_for, send_from_directory, render_template, flash
 from flask.ext.login import current_user, login_required, login_user, logout_user
 
 import os.path
@@ -20,6 +19,7 @@ def login():
         register_form.populate_obj(user)
         user.password = User.generate_password(User.password)
         login_user(user)
+        session["token"] = user.generateAuthToken().token
         db.session.add(user)
         db.session.commit()
         flash("Welcome to flatman, %s!" % user.displayname, "success")
@@ -29,6 +29,7 @@ def login():
     if login_form.validate_on_submit():
         user = User.find(login_form.username.data)
         login_user(user)
+        session["token"] = user.generateAuthToken().token
         flash("Welcome back, %s!" % user.displayname, "success")
         return redirect(url_for("main"))
 

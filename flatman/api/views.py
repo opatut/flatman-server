@@ -1,5 +1,3 @@
-from flatman import db, gravatar
-from flatman.api import api
 from flatman.models import AuthToken, User, ShoppingItem, Group, ShoppingCategory
 
 from flask import redirect, abort, request, render_template
@@ -7,12 +5,9 @@ from flask.ext.login import current_user
 from datetime import datetime
 import json, time
 
-def get_user(required=True):
-    if current_user.is_authenticated(): return current_user
-    auth = AuthToken.query.filter_by(token=request.form.get("auth")).first()
-    if not auth or auth.status != "valid": 
-        abort(401)
-    return auth.user
+
+
+from flask.ext.restful import Resource, Api
 
 def make_reply(success, data={}, error=""):
     data["success"] = success
@@ -22,18 +17,6 @@ def make_reply(success, data={}, error=""):
 
 def error(msg, **kwargs):
     return make_reply(False, kwargs, error=msg)
-
-@api.route("/")
-def index():
-    return make_reply(True, dict(version="0.0.1"))
-
-@api.route("/group", methods=("POST",))
-def group_details():
-    current_user = get_user()
-    group = current_user.group
-    if not group:
-        return error("NO_GROUP")
-    return make_reply(True, group.toDict())
 
 @api.route("/transactions/", methods=("POST",))
 @api.route("/transactions/<int:year>/<int:month>", methods=("POST",))

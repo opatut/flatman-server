@@ -1,9 +1,9 @@
 from flatman import app, db, gravatar
 from flask import url_for, session, abort, request, Markup
-from datetime import datetime
+from datetime import datetime, timedelta
 from random import choice
 from hashlib import sha512, md5
-from string import printable
+from string import ascii_letters
 
 class User(db.Model):
     # columns
@@ -77,15 +77,22 @@ TOKEN_LENGTH = 128
 class AuthToken(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     token = db.Column(db.String(255))
-    status = db.Column(db.Enum("valid", "revoked", "deleted", name="auth_token_status"), default="valid")
+    deleted = db.Column(db.Boolean, default=False)
     created = db.Column(db.DateTime)
+    valid_until = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
     def __init__(self, user):
-        self.token = "".join([choice(printable) for x in range(TOKEN_LENGTH)])
-        self.status = "valid"
+        self.token = "".join([choice(ascii_letters) for x in range(TOKEN_LENGTH)])
         self.created = datetime.utcnow()
+        self.valid_until = datetime.utcnow() + timedelta(days=14)
         self.user = user
+
+    @property
+    def status(self):
+        if self.deleted: return "deleted"
+        if self.valid_until < datetime.utcnow(): return "expired"
+        return "valid"
 
     def toDict(self):
         return dict(token=self.token, 

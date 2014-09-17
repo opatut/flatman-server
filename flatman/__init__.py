@@ -35,8 +35,6 @@ import flatman.filters
 import flatman.views
 import flatman.api
 
-app.register_blueprint(flatman.api.api, url_prefix='/api')
-
 login_manager.login_view = "index"
 
 @login_manager.user_loader
