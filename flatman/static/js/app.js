@@ -5,7 +5,7 @@ var app = angular.module("app", [
     "cselect"
 ]);
 
-app.config(function($routeProvider) {
+app.config(["$routeProvider", function($routeProvider) {
     $routeProvider
         .when('/', {
             templateUrl : '/templates/test.html',
@@ -31,26 +31,26 @@ app.config(function($routeProvider) {
             templateUrl : '/templates/tasks.html',
             controller : 'TasksController'
         });
-});
+}]);
 
-app.controller('DashboardController', function($scope) {
+app.controller('DashboardController', ["$scope", function($scope) {
     $scope.title = "Home";
-});
+}]);
 
-app.controller('AccountController', function($scope) {
+app.controller('AccountController', ["$scope", function($scope) {
     $scope.title = "Account";
-});
+}]);
 
-app.controller('MembersController', function($scope, $http) {
+app.controller('MembersController', ["$scope", "$http", function($scope, $http) {
     $scope.members = [];
 
     $http.post('/api/group').
         success(function(data, status, headers, config) {
             $scope.members = data.members;
         });
-});
+}]);
 
-app.controller('TasksController', function($scope, $http, $routeParams) {
+app.controller('TasksController', ["$scope", "$http", "$routeParams", function($scope, $http, $routeParams) {
     $scope.tasks = [];
     $scope.current_task = null;
 
@@ -61,18 +61,18 @@ app.controller('TasksController', function($scope, $http, $routeParams) {
 
             console.log($routeParams);
         });
-});
+}]);
 
-app.controller('MoneyController', function($scope, $http) {
+app.controller('MoneyController', ["$scope", "$http", function($scope, $http) {
     $scope.transactions = [];
 
     $http.post('/api/group').
         success(function(data, status, headers, config) {
             $scope.transactions = data.transactions;
         });
-});
+}]);
 
-app.controller('ShoppingController', function($scope, $timeout, $http) {
+app.controller('ShoppingController', ["$scope", "$timeout", "$http", function($scope, $timeout, $http) {
     $scope.items = [];
     $scope.categories = [];
 
@@ -90,4 +90,4 @@ app.controller('ShoppingController', function($scope, $timeout, $http) {
             $scope.items = data.shopping_items;
             $scope.categories = data.shopping_categories;
         });
-});
+}]);

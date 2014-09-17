@@ -98,5 +98,4 @@ $.fn.autocompleteShoppingCategory = function() {
             suggestion: Handlebars.compile('<p>{{title}} <span class="pull-right" style="color: lightgray;">{{item_count}} items</span></p>')
         }
     });
-
 }
