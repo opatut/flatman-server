@@ -1,67 +1,81 @@
-<div class="padding">
-    <div class="page-header">
-        <h1>Shopping</h1>
+<div class="row">
+    <div class="col-sm-3">
+        <button class="btn btn-default"><i class="fa fa-plus-circle"></i> New category</button>
+
+        <hr />
+
+        <div class="list-group">
+            <a class="list-group-item" ng-click="setCategory('all')" ng-class="current_category == 'all' ? 'active' : '' ">All</a>
+            <a class="list-group-item" ng-click="setCategory('none')" ng-class="!current_category ? 'active' : '' ">Uncategorized</a>
+        </div>
+
+        <h4>
+            Categories
+        </h4>
+
+        <div class="list-group">
+            <a ng-repeat="category in categories" ng-if="getItems(category).length > 0" class="list-group-item" ng-click="setCategory(category)" ng-class="current_category == category ? 'active' : ''">
+                <span class="badge">{{ getItems(category).length }}</span>
+                {{ category.title }}
+            </a>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <button class="btn btn-default"><i class="fa fa-trash-o"></i> Clean up</button>
+
+
+        <hr />
+
+        <div class="list-group shopping-items">
+            <div class="list-group-item item" ng-repeat="item in getItems(current_category)" ng-show="current_category == 'all' || (current_category=='none' && !item.category_id) || item.category_id == current_category.id" ng-class="editing==item ? 'active' : ''">
+                <input class="purchased" type="checkbox" ng-model="item.purchased">
+                <span class="amount">{{ item.amount }}</span>
+                <span class="title">{{ item.title }} {{ item.category_id }}</span>
+                <span class="actions pull-right">
+                    <button ng-click="setEditing(item)" class="btn btn-default btn-sm fa fa-edit"></button>
+                </span>
+            </div>
+        </div>
+
     </div>
 
-    <table class="shopping list">
-        <tr>
-            <th width="32"></th>
-            <th width="128" class="amount">Amount</th>            
-            <th class="title">Title</th>
-            <th width="256" class="category">Category</th>
-            <th width="16"></th>
-        </tr>
-        <tr class="item" ng-repeat="item in items">
-            <td class="status" ng-click="togglePurchased(item)">
-                <i class="fa fa-spin fa-spinner" ng-show="item.updating"></i>
-                <i class="fa fa-check-square-o" ng-show="item.purchased && !item.updating"></i>
-                <i class="fa fa-square-o" ng-show="!item.purchased && !item.updating"></i>
-            </td>
-            <td class="amount" width="120">
-                {{ item.amount }}
-            </td>
-            <td class="title">
-                <span class="title">
-                    {{ item.title }}
-                </span> 
+    <div class="col-sm-3">
+        <button class="btn btn-default btn-success" ng-click="open()" ng-controller="ShoppingItemController"><i class="fa fa-plus-circle"></i> New Item</button>
 
-                <span class="description">
-                    {{ item.description }}
-                    <i class="fa fa-plus-circle" ng-hide="item.description"></i>
+        <hr />
+
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="fa fa-shopping-cart"></i>
                 </span>
-            </td>
-            <td class="category" width="200">
-                {{ categories[item.category_id].title }}
-            </td>
-            <td></td>
-        </tr>
-        <tr class="header">
-            <th></th>
-            <th></th>
-            <th colspan="2">
-                Add item 
-            </th>
-            <th></th>
-        </tr>
-        <tr>
-            <td></td>
-            <td>
-                <input type="text" class="form-control autofocus" placeholder="Amount" />
-            </td>
-            <td>
-                <input type="text" class="form-control" placeholder="Item" />
-            </td>
-            <td>
-                <input type="text" class="form-control" placeholder="Category" data-autocomplete="ShoppingCategory" />
-            </td>
-            <td>
-                <button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i></button>
-            </td>
-        </tr> 
-    </table>
-    </form>
-    <hr>
-    <p>
-        <button class="btn btn-default"><i class="fa fa-trash-o"></i> Clean up</button>
-    </p>
+                <input type="text" class="form-control" placeholder="Item" ng-model="editing.title" ng-change="saveItem(editing)" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="fa fa-asterisk"></i>
+                </span>
+                <input type="text" class="form-control autofocus" placeholder="Amount" ng-model="editing.amount" ng-change="saveItem(editing)" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="fa fa-tag"></i>
+                </span>
+                <select ng-model="editing.category_id" ng-options="c.id as c.title for c in categories" class="form-control" ng-change="itemChangeCategory(); saveItem(editing)"></select>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" ng-click="saveItem(editing, true); editing=null">
+            <span ng-if="updating"><i class="fa fa-spinner fa-spin"></i></span>
+            <span ng-if="!updating"><i class="fa fa-check"></i></span>
+            Save
+        </button>
+    </div>
 </div>
+

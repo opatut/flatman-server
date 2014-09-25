@@ -2,10 +2,7 @@ from flatman import app, db
 from flatman.models import User, AuthToken
 
 import flask
-from flask import request, jsonify, abort, make_response
-from flask.ext.restful import Api
-
-api = Api(app, "/api")
+from flask import request, json, abort, make_response, Response, redirect
 
 # make sure API has Authorization set
 @app.before_request
@@ -13,18 +10,21 @@ def before_request():
     # only work on API
     if not request.path.startswith("/api/"): return
     print(request.endpoint)
-    if request.endpoint in ("api_login", "api_about"): return
+    if request.endpoint in ("api_login", "api_about", "api_avatar"): return
     if not get_user(): abort(401)
 
-# @jsonize 
+# @jsonize
 def jsonize(f):
     def wrapper(*args):
         result = f(*args)
-        if isinstance(result, tuple):
-            result = (jsonify(result[0]), result[1:])
-            response = make_response(*result)
+        if isinstance(result, Response):
+            response = result
+        elif isinstance(result, tuple):
+            l = list(result)
+            l[0] = json.dumps(l[0])
+            response = make_response(*l)
         else:
-            result = jsonify(result)
+            result = json.dumps(result)
             response = make_response(result)
 
         response.headers.Authorization = "Token"
@@ -43,8 +43,11 @@ def get_auth():
 
 def get_user():
     auth = get_auth()
-    if not auth or auth.status != "valid": return None
-    return auth.user
+    user = None
+    # user = User.query.first() # DEBUG
+    if auth and auth.status == "valid": 
+        user = auth.user
+    return user
 
 
 import flatman.api.resources
@@ -64,6 +67,7 @@ def api_about():
 def api_login():
     # get credentials from Authorization header
     try:
+        print("Credentials", request.headers.get("Authorization"))
         credentials = flask.json.loads(request.headers.get("Authorization"))
         if not "username" in credentials or not "password" in credentials:
             raise ValueError()
@@ -77,7 +81,7 @@ def api_login():
         return dict(message="Invalid credentials."), 401
 
     auth = user.generateAuthToken() 
-    return dict(token=auth.toDict(), user=user.toDict())
+    return dict(auth_token=auth.token)
 
 @app.route("/api/logout")
 @jsonize
@@ -91,3 +95,10 @@ def api_logout():
 @jsonize
 def permission_denied(e):
     return dict(message="Authorization required"), 401
+
+
+@app.route("/api/user/<int:id>/avatar")
+@app.route("/api/user/<int:id>/avatar/<int:size>")
+def api_avatar(id, size=128):
+    user = User.query.filter_by(id=id).first_or_404()
+    return redirect(user.get_avatar(size))

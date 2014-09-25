@@ -1,0 +1,40 @@
+<div class="modal-header">
+    <h3 class="modal-title">Add shopping item</h3>
+</div>
+
+<div class="modal-body">
+    <div class="form-group">
+        <div class="input-group">
+            <span class="input-group-addon">
+                <i class="fa fa-shopping-cart"></i>
+            </span>
+            <input type="text" class="form-control" placeholder="Item" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-sm-6">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="fa fa-asterisk"></i>
+                </span>
+                <input type="text" class="form-control autofocus" placeholder="Amount"/>
+            </div>
+        </div>
+
+        <div class="form-group col-sm-6">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="fa fa-tag"></i>
+                </span>
+                <input type="text" class="form-control" placeholder="Category" data-autocomplete="ShoppingCategory" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" ng-click="cancel()">Close</button>
+    <button class="btn btn-default" ng-click="save()">Save and close</button>
+    <button class="btn btn-primary" ng-click="next()">Save</button>
+</div>

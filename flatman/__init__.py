@@ -26,7 +26,18 @@ scss_all = Bundle("scss/config.scss", "scss/mixins.scss", "scss/main.scss", filt
 css_all = Bundle("css/*.css", scss_all, filters="cssmin", output="gen/main.css")
 assets.register("css_all", css_all)
 
-js = Bundle("js/external/*.js", "js/controllers/*.js", "js/*.js", filters='jsmin', output='gen/main.js')
+js = Bundle(
+    "js/external/jquery.js",
+    "js/external/underscore-min.js", 
+    "js/external/underscore.string.min.js",
+    "js/external/typeahead.bundle.min.js",
+    "js/external/ui-bootstrap-tpls-0.11.0.min.js",
+    "js/external/bootstrap.min.js",
+    "js/external/moment.min.js",
+    "js/controllers/*.js", 
+    "js/*.js", 
+    filters='jsmin', output='gen/main.js')
+    
 assets.register('js_all', js)
 
 import flatman.models

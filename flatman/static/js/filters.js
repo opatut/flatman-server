@@ -26,3 +26,21 @@ module.filter('amount', function() {
         return input.toFixed(2);
     };
 });
+
+module.filter('interval', function() {
+    return function(days) {
+        if(days == 0) {
+            return "??";
+        } else if(days == 1) {
+            return "every day";
+        } else if(days == 2) {
+            return "every other day";
+        } else if(days % 7 == 0 && days == 7) {
+            return "every week";
+        } else if(days % 7 == 0) {
+            return "every " + (days/7) + " weeks";
+        } else {
+            return "every " + days + " days";
+        }
+    };
+});

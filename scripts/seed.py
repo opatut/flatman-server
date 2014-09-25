@@ -46,6 +46,7 @@ task.assignment = "one"
 task.skippable = False
 task.interval_days = 1
 task.interval_start = datetime(2014, 4, 6, 12, 00)
+task.deadline = task.interval_start
 task.assignee = gause
 task.group = group
 
@@ -57,7 +58,7 @@ task.assigment = "order"
 task.skippable = False
 task.interval_days = 7
 task.interval_start = datetime(2014, 3, 31, 16, 00)
-task.deadline = datetime(2014, 4, 7, 16, 00)
+task.deadline = task.interval_start
 task.assignee = jauch
 task.group = group
 

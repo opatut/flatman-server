@@ -25,6 +25,11 @@ class User(db.Model):
     transactions_out      = db.relationship("Transaction", backref="from_user",  lazy="dynamic", foreign_keys="Transaction.from_user_id")
     transactions_in       = db.relationship("Transaction", backref="to_user",    lazy="dynamic", foreign_keys="Transaction.to_user_id")
 
+    def has_permission(self, user, action):
+        if action == "get":
+            return self.group_id == user.group_id
+        return self == user and action != "delete"
+
     # login stuff
     def get_id(self):
         return self.username
@@ -38,12 +43,16 @@ class User(db.Model):
     def is_authenticated(self):
         return True
 
+    @property
+    def mailhash(self):
+        return md5(self.email).hexdigest()
+
     def toDict(self, private=False):
         return dict(id=self.id, 
             username=self.username, 
             displayname=self.displayname,
             email=self.email,
-            mailhash=md5(self.email).hexdigest(),
+            mailhash=self.mailhash,
             phone=self.phone,
             group_id=self.group_id)
 
@@ -58,8 +67,9 @@ class User(db.Model):
         self.group_joined_date = datetime.utcnow()
 
     def get_avatar(self, size=32):
-        return gravatar(self.email, size=size)
-        #return self.avatar_url or gravatar(self.email, size=size)
+        if self.id == 1:
+            return gravatar(self.email, size=size)
+        return self.avatar_url or gravatar(self.email, size=size)
 
     def get_link(self):
         return Markup(u'<a href="{0}">{1}</a>'.format("#", self.displayname))
@@ -115,6 +125,9 @@ class Group(db.Model):
     def __init__(self):
         self.created = datetime.utcnow()
 
+    def has_permission(self, user, action):
+        return action == "add" or (user in self.members and action != "delete")
+
     @property
     def tasks(self):
         return self.all_tasks.filter_by(deleted=False)
@@ -152,6 +165,8 @@ class Task(db.Model):
 
     # relationships
     assignee = db.relationship("User", backref="assigned_tasks")
+
+    permission_parent = "group"
 
     def finish(self):
         if self.repeating == "single":
@@ -201,6 +216,8 @@ class ShoppingItem(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey("shopping_category.id"))
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"))
 
+    permission_parent = "group"
+
     def __init__(self, amount="", title="", category=None):
         self.amount = amount
         self.title = title
@@ -226,6 +243,8 @@ class ShoppingCategory(db.Model):
 
     # relationships
     all_items = db.relationship("ShoppingItem", backref="category", lazy="dynamic")
+
+    permission_parent = "group"
 
     def __init__(self, title="", group=None):
         self.title = title
@@ -254,6 +273,8 @@ class Transaction(db.Model):
     author_id    = db.Column(db.Integer, db.ForeignKey("user.id"))
     from_user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     to_user_id   = db.Column(db.Integer, db.ForeignKey("user.id"))
+
+    permission_parent = "group"
 
     def __init__(self, group, author, from_, to_, amount, reason="", extern="", comment="", type="normal"):
         self.group = group

@@ -1,40 +1,96 @@
-<div class="page-split">
-    <div class="split">
-        <h1>Tasks</h1>
+<div class="tasks table-responsive" ng-hide="task">
+    <table class="task list" cselect ng-model="acurrent_task">
+        <tr>
+            <th>Title</th>
+            <th>Assignee</th>
+            <th>Repeat</th>
+            <th>Assign</th>
+            <th>Deadline</th>
+        </tr>
+        <tr class="item" ng-repeat="task in tasks" cselect-option="task" ng-click="setCurrentTask(task)">
+            <td>
+                <a class="item-link" href="#">{{ task.title }}</a>
+            </td>
+            <td>
+                {{ task.assignee }}
+            </td>
+            <td>
+                {{ task.assignment }}
+            </td>
+            <td>
+                {{ task.repeating }}
 
-        <table class="task list" cselect ng-model="current_task">
-            <tr>
-                <th>Title</th>
-                <th>Assignee</th>
-                <th>Repeat</th>
-                <th>Assign</th>
-                <th>Deadline</th>
-            </tr>
-            <tr class="item" ng-repeat="task in tasks" cselect-option="task" ng-click="setCurrentTask(task)">
-                <td>
-                    <a class="item-link" href="#">{{ task.title }}</a>
-                </td>
-                <td>
-                    {{ task.assignee }}
-                </td>
-                <td>
+            </td>
+            <td>
+                {{ task.deadline }}
+            </td>
+        </tr>
+    </table>
+</div>
 
-                </td>
-                <td>
+<div class="task" ng-show="task">
+    <h1>
+        <button class="btn btn-default pull-right" ng-click="task = null"><i class="fa fa-chevron-left"></i> Back to task list</button>
+        {{ task.title }}
+    </h1>
 
-                </td>
-                <td>
+    <div class="row">
+        <div class="col-sm-4">
+            <h3>What</h3>
+
+            <p>{{ task.description }}</p>
+        </div>
+        <div class="col-sm-4">
+            <h3>Who</h3>
+
+            <p ng-show="task.assignment == 'all'">
+                everyone is responsible for this task.  
+            </p>
+            <p ng-hide="task.assignment == 'all'">
+
+                <div ng-include ng-repeat="user in [getUser(task.assignee_id)]" src="'/templates/user-badge.html'"></div>
+
+                <div ng-show="task.assignment == 'order'">
+                    <i>This task changes the assignee after every execution.</i>
+                </div>
+            </p>
+        </div>
+        <div class="col-sm-4">
+            <h3>When</h3>
+
+            <ul class="list-unstyled">
+
+                <li ng-show="task.repeating == 'interval'">
+                    <i class="fa fa-repeat"></i> repeats 
+                    {{ task.interval_days|interval }}
+                </li>
+                <li ng-show="task.repeating == 'ondemand'">
+                    <i class="fa fa-repeat"></i> repeats 
+                    on demand
+                </li>
+                <li ng-show="task.repeating == 'single'">
+                    <i class="fa fa-dot-circle-o"></i> 
+                    single-time task
+                </li>
+
+
+                <li ng-show="task.deadline">
+                    <i class="fa fa-clock-o"></i>
                     {{ task.deadline }}
-                </td>
-            </tr>
-        </table>
-    </div> 
-
-    <div class="split" style="background: #F9F9F9; border-left: 1px solid #DDD; box-shadow: -3px 0 8px rgba(0, 0, 0, 0.1);">
-        <div class="task" ng-show="current_task">
-            <h2>{{ current_task.title }}</h2>
-
-            <p>Currently assigned to {{ current_task.assignee }}</p>
+                </li>
+            </ul>
         </div>
     </div>
+
+    <hr />
+
+    <div class="text-center">
+        <button class="btn btn-success btn-lg">Finished!</button>
+    </div>
+
+    <div class="text-center" ng-show="task.skippable">
+        <button class="btn btn-link btn-sm">Skip this task</button>
+    </div>
 </div>
+
+

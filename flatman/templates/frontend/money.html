@@ -1,37 +1,31 @@
-<div class="padding">
-    <h1>Money</h1>
-
-    <i>this month</i>
-
-    <div class="well">
-        <div class="row">
-            <div class="col-md-4">
-                <div><b>Cashbook</b></div>
-                <span style="color: green;">52.64</span>
-            </div>
-            <div class="col-md-4">
-                <div><b>You</b></div>
-                <span style="color: red;">-12.64</span>
-            </div>
+<div class="well">
+    <div class="row">
+        <div class="col-md-4">
+            <div><b>Cashbook</b></div>
+            <span style="color: green;">52.64</span>
+        </div>
+        <div class="col-md-4">
+            <div><b>You</b></div>
+            <span style="color: red;">-12.64</span>
         </div>
     </div>
-
-    <table class="table">
-        <tr>
-            <th>TID</th>
-            <th>Date</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Reason</th>
-            <th class="amount">Amount</th>
-        </tr> 
-        <tr ng-repeat="transaction in transactions">
-            <td>{{ transaction.id }}</td>
-            <td>{{ transaction.date }}</td>
-            <td>{{ transaction | from_to:"from" }}</td>
-            <td>{{ transaction | from_to:"top" }}</td>
-            <td>{{ transaction.reason }}</td>
-            <td class="amount">{{ transaction.amount | amount }}</td>
-        </tr>
-    </table>
 </div>
+
+<table class="table">
+    <tr>
+        <th>TID</th>
+        <th>Date</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Reason</th>
+        <th class="amount">Amount</th>
+    </tr> 
+    <tr ng-repeat="transaction in transactions">
+        <td>{{ transaction.id }}</td>
+        <td>{{ transaction.date }}</td>
+        <td>{{ transaction | from_to:"from" }}</td>
+        <td>{{ transaction | from_to:"top" }}</td>
+        <td>{{ transaction.reason }}</td>
+        <td class="amount">{{ transaction.amount | amount }}</td>
+    </tr>
+</table>
